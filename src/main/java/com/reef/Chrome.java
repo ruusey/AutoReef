@@ -16,12 +16,9 @@ public class Chrome {
 	static String email = "";
 	static String password = "";
 	static String preOut = "[AutoReef] ";
-	public Chrome() {
-		// TODO Auto-generated constructor stub
-	}
+	static String driverPath = "D:\\downloads\\chromedriver_win32x\\chromedriver.exe";
 	public static void main(String[] args) {
-		String exePath = "D:\\downloads\\chromedriver_win32x\\chromedriver.exe";
-		System.setProperty("webdriver.chrome.driver", exePath);
+		System.setProperty("webdriver.chrome.driver", driverPath);
 		driver = new ChromeDriver();
 		try {
 			kb=new VirtualKeyBoard();
@@ -36,7 +33,7 @@ public class Chrome {
 			is.close();
 			email = p.getProperty("email");
 			password = p.getProperty("password");
-			System.out.println(preOut+"Loaded account from file ("+email+")");
+			System.out.println(preOut+"Loaded account from file: ("+email+")");
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -53,11 +50,13 @@ public class Chrome {
 		clickPassword();
 		clickSignIn();
 		delayAction(1000);
+		System.out.println(preOut+"Succesfully connected to: "+driver.getCurrentUrl());
 		clickFirstCourse();
+		System.out.println(preOut+"Succesfully selected course: ("+driver.findElement(By.tagName("h1")).getText()+")");
 		boolean displayJoinAttmpts = true;
 		while(!joinAvailable()) {
 			if(displayJoinAttmpts) {
-				System.out.println(preOut+"No Sessions Available, Idling...");
+				System.out.println(preOut+"No sessions available, idling...");
 				displayJoinAttmpts=false;
 			}
 			delayAction(5000);	
