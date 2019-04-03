@@ -14,14 +14,22 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Chrome {
+	static long delayTime = 500;
+	static long joinSleepTime = 5000;
 	static WebDriver driver = null;
-	static String email = "";
-	static String password = "";
+	static String email =null;
+	static String password = null;
 	static String preOut = "[AutoReef] ";
 	static String driverPath = "D:\\downloads\\chromedriver_win32x\\chromedriver.exe";
-	public static void main(String[] args) {
+	static String reefUrl = "https://app.reef-education.com";
+	public static void main(String[] args) throws Exception {
 		System.setProperty("webdriver.chrome.driver", driverPath);
-		driver = new ChromeDriver();
+		try {
+			driver = new ChromeDriver();
+		}catch(Exception e) {
+			throw new Exception(preOut+"Unable to create driver instance of: ("+driverPath+")");
+		}
+		
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		Properties p = new Properties();
 		try {
@@ -30,51 +38,60 @@ public class Chrome {
 			is.close();
 			email = p.getProperty("email");
 			password = p.getProperty("password");
+			if(email==null || password==null || password.length()<2 || email.length()<2) {
+				throw new Exception(preOut+"Unable to load account credentials please ensure you have filled out the email and password feilds in `settings.properties`");
+			}
 			System.out.println(preOut+"Loaded account from file: ("+email+")");
+			driver.get(reefUrl);
 		} catch (FileNotFoundException e) {
-			e.printStackTrace();
+			throw new Exception(preOut+"Unable to locate `settings.properties` please ensure the file is present.");
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new Exception(preOut+"Unable to parse credentials from `settings.properties` please ensure its structure is correct.");
+		}catch (Exception e) {
+			throw new Exception(preOut+e.getMessage());
 		}
-		
-		driver.get("https://app.reef-education.com");
 		while(driver.getTitle()==null) {
-			delayAction(1000);
+			delayAction(delayTime);
 		}
 		System.out.println(preOut+"Succesfully connected to: "+driver.getCurrentUrl());
-		delayAction(1000);
+		delayAction(delayTime);
 		clickEmail();
 		clickPassword();
 		clickSignIn();
 		System.out.println(preOut+"Succesfully connected to: "+driver.getCurrentUrl());
 		clickFirstCourse();
+		System.out.println(preOut+"Succesfully connected to: "+driver.getCurrentUrl());
 		System.out.println(preOut+"Succesfully selected course: ("+driver.findElement(By.tagName("h1")).getText()+")");
 		boolean displayJoinAttmpts = true;
 		while(!joinAvailable()) {
 			if(displayJoinAttmpts) {
-				System.out.println(preOut+"No sessions available, idling...");
+				System.out.println(preOut+"No open course sessions available, idling...");
 				displayJoinAttmpts=false;
 			}
-			delayAction(5000);	
+			delayAction(joinSleepTime);	
 		}
 	}
 	public static void clickEmail() {
+		System.out.println(preOut+"Selecting email feild, filling with `email`");
 		driver.findElement(By.id("userEmail")).click();
 		driver.findElement(By.id("userEmail")).sendKeys(email);
-		delayAction(1000);
+		delayAction(delayTime);
 	}
 	public static void clickPassword() {
+		System.out.println(preOut+"Selecting password feild, filling with `password`");
 		driver.findElement(By.id("userPassword")).click();
 		driver.findElement(By.id("userPassword")).sendKeys(password);
-		delayAction(1000);
+		delayAction(delayTime);
 	}
 	public static void clickSignIn() {
+		System.out.println(preOut+"Clicking sign-in.");
 		driver.findElement(By.id("sign-in-button")).click();
-		delayAction(1000);
+		delayAction((long) (delayTime*1.2));
 	}
 	public static void clickFirstCourse() {
+		System.out.println(preOut+"Selecting first course.");
 		driver.findElement(By.tagName("a")).click();
-		delayAction(1000);
+		delayAction(delayTime);
 	}
 	public static boolean joinAvailable() {
 		boolean canJoin = driver.findElement(By.id("join-inner-container")).isDisplayed();
