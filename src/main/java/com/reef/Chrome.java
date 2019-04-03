@@ -1,6 +1,9 @@
 package com.reef;
 
-import java.awt.AWTException;
+// @Copyright Robert Usey 04/03/2019
+// AutoReef is proprietary code developed not intended for redistribution
+// By the aforementioned author.
+
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +15,6 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Chrome {
 	static WebDriver driver = null;
-	static VirtualKeyBoard kb = null;
 	static String email = "";
 	static String password = "";
 	static String preOut = "[AutoReef] ";
@@ -20,11 +22,6 @@ public class Chrome {
 	public static void main(String[] args) {
 		System.setProperty("webdriver.chrome.driver", driverPath);
 		driver = new ChromeDriver();
-		try {
-			kb=new VirtualKeyBoard();
-		} catch (AWTException e) {
-			e.printStackTrace();
-		}
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		Properties p = new Properties();
 		try {
@@ -49,7 +46,6 @@ public class Chrome {
 		clickEmail();
 		clickPassword();
 		clickSignIn();
-		delayAction(1000);
 		System.out.println(preOut+"Succesfully connected to: "+driver.getCurrentUrl());
 		clickFirstCourse();
 		System.out.println(preOut+"Succesfully selected course: ("+driver.findElement(By.tagName("h1")).getText()+")");
@@ -79,7 +75,6 @@ public class Chrome {
 	public static void clickFirstCourse() {
 		driver.findElement(By.tagName("a")).click();
 		delayAction(1000);
-		
 	}
 	public static boolean joinAvailable() {
 		boolean canJoin = driver.findElement(By.id("join-inner-container")).isDisplayed();
