@@ -12,7 +12,6 @@ import java.util.Properties;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
-
 public class Chrome {
 	static long delayTime = 500;
 	static long joinSleepTime = 5000;
@@ -26,8 +25,6 @@ public class Chrome {
 	static String distDriverPathLinux = "chromedriverLinux";
 	static String reefUrl = "https://app.reef-education.com";
 	public static void main(String[] args) throws Exception {
-		
-		
 		try {
 			if(OSValidator.isMac()) {
 				System.setProperty("webdriver.chrome.driver", distDriverPathMac);
