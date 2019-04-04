@@ -21,15 +21,25 @@ public class Chrome {
 	static String password = null;
 	static String preOut = "[AutoReef] ";
 	static String driverPath = "D:\\downloads\\chromedriver_win32x\\chromedriver.exe";
+	static String distDriverPathWin = "chromedriver.exe";
+	static String distDriverPathMac = "chromedriverMac";
+	static String distDriverPathLinux = "chromedriverLinux";
 	static String reefUrl = "https://app.reef-education.com";
 	public static void main(String[] args) throws Exception {
-		System.setProperty("webdriver.chrome.driver", driverPath);
+		
+		
 		try {
+			if(OSValidator.isMac()) {
+				System.setProperty("webdriver.chrome.driver", distDriverPathMac);
+			}else if(OSValidator.isWindows()) {
+				System.setProperty("webdriver.chrome.driver", distDriverPathWin);
+			}else if(OSValidator.isUnix()) {
+				System.setProperty("webdriver.chrome.driver", distDriverPathLinux);
+			}
 			driver = new ChromeDriver();
 		}catch(Exception e) {
 			throw new Exception(preOut+"Unable to create driver instance of: ("+driverPath+")");
 		}
-		
 		ClassLoader classloader = Thread.currentThread().getContextClassLoader();
 		Properties p = new Properties();
 		try {
