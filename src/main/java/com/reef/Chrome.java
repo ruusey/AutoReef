@@ -7,10 +7,13 @@ package com.reef;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 import java.util.Properties;
+import java.util.Random;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 public class Chrome {
 	static long delayTime = 500;
@@ -19,7 +22,7 @@ public class Chrome {
 	static String email =null;
 	static String password = null;
 	static String preOut = "[AutoReef] ";
-	static String driverPath = "D:\\downloads\\chromedriver_win32x\\chromedriver.exe";
+	static String driverPath = "D:/downloads/chromedriver_win32/chromedriver.exe";
 	static String distDriverPathWin = "chromedriver.exe";
 	static String distDriverPathMac = "chromedriverMac";
 	static String distDriverPathLinux = "chromedriverLinux";
@@ -29,7 +32,7 @@ public class Chrome {
 			if(OSValidator.isMac()) {
 				System.setProperty("webdriver.chrome.driver", distDriverPathMac);
 			}else if(OSValidator.isWindows()) {
-				System.setProperty("webdriver.chrome.driver", distDriverPathWin);
+				System.setProperty("webdriver.chrome.driver", driverPath);
 			}else if(OSValidator.isUnix()) {
 				System.setProperty("webdriver.chrome.driver", distDriverPathLinux);
 			}
@@ -76,7 +79,19 @@ public class Chrome {
 				displayJoinAttmpts=false;
 			}
 			delayAction(joinSleepTime);	
+			
 		}
+		//WIP
+		while(true) {
+			Random r = new Random(System.currentTimeMillis());
+			List<WebElement> ele = driver.findElements(By.className("btn"));
+			WebElement toChoose = ele.get(r.nextInt(0));
+			toChoose.click();
+			break;
+		}
+	
+		
+		driver.close();
 	}
 	public static void clickEmail() {
 		System.out.println(preOut+"Selecting email feild, filling with `email`");
@@ -101,9 +116,10 @@ public class Chrome {
 		delayAction(delayTime);
 	}
 	public static boolean joinAvailable() {
-		boolean canJoin = driver.findElement(By.id("join-inner-container")).isDisplayed();
+		boolean canJoin = driver.findElement(By.className("selectable-item-list-courses")).isDisplayed();
 		if(canJoin) {
-			driver.findElement(By.className("join-button")).click();
+			driver.findElement(By.className("ng-binding")).click();
+			delayAction(delayTime);
 			return true;
 		}else {
 			return false;
